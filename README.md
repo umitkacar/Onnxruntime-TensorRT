@@ -7,3 +7,5 @@
 - https://github.com/ultralytics/ultralytics/tree/main/examples
 - https://github.com/ultralytics/ultralytics/tree/main/examples/YOLOv8-ONNXRuntime-CPP
 - https://docs.ultralytics.com/modes/export/#arguments
+- https://github.com/ultralytics/ultralytics/issues/1852
+- https://github.com/UNeedCryDear/yolov8-opencv-onnxruntime-cpp
