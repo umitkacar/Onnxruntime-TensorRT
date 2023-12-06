@@ -11,3 +11,4 @@
 - https://github.com/UNeedCryDear/yolov8-opencv-onnxruntime-cpp
 - https://docs.ultralytics.com/datasets/pose/
 - https://docs.ultralytics.com/tasks/pose/#train
+- https://docs.ultralytics.com/datasets/pose/tiger-pose/#introduction
