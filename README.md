@@ -9,3 +9,5 @@
 - https://docs.ultralytics.com/modes/export/#arguments
 - https://github.com/ultralytics/ultralytics/issues/1852
 - https://github.com/UNeedCryDear/yolov8-opencv-onnxruntime-cpp
+- https://docs.ultralytics.com/datasets/pose/
+- https://docs.ultralytics.com/tasks/pose/#train
