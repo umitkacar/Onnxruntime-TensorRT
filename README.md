@@ -12,3 +12,6 @@
 - https://docs.ultralytics.com/datasets/pose/
 - https://docs.ultralytics.com/tasks/pose/#train
 - https://docs.ultralytics.com/datasets/pose/tiger-pose/#introduction
+
+## FIXED CODES
+- https://github.com/ultralytics/yolov5/issues/916
