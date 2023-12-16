@@ -10,6 +10,7 @@
 - https://github.com/hpc203/yolov6-opencv-onnxruntime/tree/main
 - https://github.com/ultralytics/ultralytics/tree/main/examples
 - https://github.com/ultralytics/ultralytics/tree/main/examples/YOLOv8-ONNXRuntime-CPP
+- https://github.com/ifzhang/ByteTrack/blob/main/deploy/ONNXRuntime/onnx_inference.py
 
 ## FIXED CODES
 - https://github.com/ultralytics/yolov5/issues/916
