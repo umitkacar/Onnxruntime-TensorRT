@@ -13,6 +13,7 @@
 - https://github.com/ifzhang/ByteTrack/blob/main/deploy/ONNXRuntime/onnx_inference.py
 - https://github.com/Amyheart/yolo-onnxruntime-cpp
 - https://huggingface.co/models?sort=trending&search=onnx
+- https://neuml.github.io/txtai/pipeline/train/hfonnx/
 
 ## FIXED CODES
 - https://github.com/ultralytics/yolov5/issues/916
