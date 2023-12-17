@@ -21,3 +21,5 @@
 ## DOCUMENT
 - https://onnxruntime.ai/docs/reference/compatibility.html
 - https://github.com/onnx/onnx/blob/main/docs/Versioning.md
+- https://pytorch.org/tutorials/advanced/super_resolution_with_onnxruntime.html
+- https://onnxruntime.ai/docs/api/python/on_device_training/training_artifacts.html
