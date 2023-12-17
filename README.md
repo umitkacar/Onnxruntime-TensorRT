@@ -12,6 +12,7 @@
 - https://github.com/ultralytics/ultralytics/tree/main/examples/YOLOv8-ONNXRuntime-CPP
 - https://github.com/ifzhang/ByteTrack/blob/main/deploy/ONNXRuntime/onnx_inference.py
 - https://github.com/Amyheart/yolo-onnxruntime-cpp
+- https://huggingface.co/models?sort=trending&search=onnx
 
 ## FIXED CODES
 - https://github.com/ultralytics/yolov5/issues/916
