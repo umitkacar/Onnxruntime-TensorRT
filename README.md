@@ -19,6 +19,7 @@
 - https://github.com/ultralytics/yolov5/issues/916
 - https://zhuanlan.zhihu.com/p/466677699
 - https://github.com/hpc203?tab=repositories
+- https://velog.io/@dnchoi/ONNX-runtime-install
 
 ## DOCUMENT
 - https://onnxruntime.ai/docs/reference/compatibility.html
