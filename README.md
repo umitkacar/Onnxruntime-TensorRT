@@ -26,3 +26,4 @@
 - https://pytorch.org/tutorials/advanced/super_resolution_with_onnxruntime.html
 - https://onnxruntime.ai/docs/api/python/on_device_training/training_artifacts.html
 - https://pytorch.org/tutorials/beginner/onnx/onnx_registry_tutorial.html
+- https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html
