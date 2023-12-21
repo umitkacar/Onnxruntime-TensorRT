@@ -29,7 +29,7 @@
 ### ONNXRUNTIME
 - https://onnxruntime.ai/docs/reference/compatibility.html
 - https://github.com/onnx/onnx/blob/main/docs/Versioning.md
-  https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html
+- https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html
   
 ### TENSORRT
 - https://onnxruntime.ai/docs/execution-providers/TensorRT-ExecutionProvider.html#requirements
