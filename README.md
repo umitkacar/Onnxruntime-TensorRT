@@ -33,3 +33,4 @@
   
 ### TENSORRT
 - https://onnxruntime.ai/docs/execution-providers/TensorRT-ExecutionProvider.html#requirements
+- https://gitee.com/arnoldfychen/onnxruntime/blob/master/docs/execution_providers/TensorRT-ExecutionProvider.md#specify-tensorrt-engine-cache-path
