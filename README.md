@@ -22,11 +22,14 @@
 - https://velog.io/@dnchoi/ONNX-runtime-install
 
 ## DOCUMENT
-- https://onnxruntime.ai/docs/reference/compatibility.html
-- https://github.com/onnx/onnx/blob/main/docs/Versioning.md
 - https://pytorch.org/tutorials/advanced/super_resolution_with_onnxruntime.html
 - https://onnxruntime.ai/docs/api/python/on_device_training/training_artifacts.html
 - https://pytorch.org/tutorials/beginner/onnx/onnx_registry_tutorial.html
-- https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html
+
+### ONNXRUNTIME
+- https://onnxruntime.ai/docs/reference/compatibility.html
+- https://github.com/onnx/onnx/blob/main/docs/Versioning.md
+  https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html
+  
 ### TENSORRT
 - https://onnxruntime.ai/docs/execution-providers/TensorRT-ExecutionProvider.html#requirements
