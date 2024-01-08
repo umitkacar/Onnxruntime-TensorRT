@@ -22,6 +22,7 @@
 - https://velog.io/@dnchoi/ONNX-runtime-install
 
 ## DOCUMENT
+- https://github.com/microsoft/onnxruntime-inference-examples/tree/main/quantization/image_classification/cpu
 - https://pytorch.org/tutorials/advanced/super_resolution_with_onnxruntime.html
 - https://onnxruntime.ai/docs/api/python/on_device_training/training_artifacts.html
 - https://pytorch.org/tutorials/beginner/onnx/onnx_registry_tutorial.html
