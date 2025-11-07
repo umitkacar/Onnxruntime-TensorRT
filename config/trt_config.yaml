@@ -1,0 +1,85 @@
+# TensorRT Execution Provider Configuration
+# Use this file to configure ONNX Runtime with TensorRT
+
+tensorrt:
+  # Device Configuration
+  device_id: 0  # GPU device ID
+
+  # Workspace Configuration
+  max_workspace_size: 4294967296  # 4GB in bytes
+
+  # Precision Configuration
+  fp16_enable: true
+  int8_enable: false
+
+  # Engine Cache
+  engine_cache_enable: true
+  engine_cache_path: "./trt_cache"
+
+  # Timing Cache (speeds up engine build)
+  timing_cache_enable: true
+  timing_cache_path: "./timing_cache"
+
+  # Graph Optimization
+  max_partition_iterations: 1000
+  min_subgraph_size: 1
+
+  # Advanced Options
+  force_sequential_engine_build: false
+  context_memory_sharing_enable: true
+  layer_norm_fp32_fallback: false
+
+  # Dynamic Shapes (optional)
+  # Uncomment and configure for dynamic batch/resolution
+  # profile_min_shapes: "input:1x3x224x224"
+  # profile_opt_shapes: "input:8x3x224x224"
+  # profile_max_shapes: "input:32x3x224x224"
+
+  # INT8 Calibration (if int8_enable: true)
+  # int8_calibration_table_name: "calibration.flatbuffers"
+  # int8_use_native_calibration_table: false
+
+# CUDA Execution Provider Configuration
+cuda:
+  device_id: 0
+  gpu_mem_limit: 8589934592  # 8GB
+  arena_extend_strategy: "kNextPowerOfTwo"
+  cudnn_conv_algo_search: "EXHAUSTIVE"
+  do_copy_in_default_stream: true
+
+# Model-Specific Configurations
+models:
+  yolov10:
+    input_size: [640, 640]
+    conf_threshold: 0.25
+    iou_threshold: 0.45
+    max_det: 300
+
+  sam2:
+    image_size: 1024
+    mask_threshold: 0.5
+
+  llama:
+    max_length: 2048
+    temperature: 0.7
+    top_p: 0.9
+    top_k: 50
+    repetition_penalty: 1.1
+
+# Benchmark Configuration
+benchmark:
+  warmup_runs: 10
+  test_runs: 100
+  batch_sizes: [1, 4, 8, 16, 32]
+  input_shapes:
+    - [224, 224]
+    - [384, 384]
+    - [640, 640]
+    - [1024, 1024]
+
+# Logging
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+  tensorrt_logger_level: "WARNING"
+  save_logs: true
+  log_file: "onnxruntime_trt.log"

@@ -30,3 +30,79 @@
 *.exe
 *.out
 *.app
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# TensorRT Cache
+trt_cache/
+trt_*_cache/
+timing_cache/
+*.engine
+*.plan
+*.flatbuffers
+
+# ONNX Models
+*.onnx
+models/
+
+# Test Data
+test_images/
+test_videos/
+results/
+outputs/
+
+# Logs
+*.log
+logs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Weights & Biases
+wandb/
+
+# MLflow
+mlruns/
+
+# Benchmark Results
+benchmark_results/
+*.json
