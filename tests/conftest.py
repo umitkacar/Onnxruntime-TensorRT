@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
-from pathlib import Path
-from typing import Any, Dict
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 import pytest
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 @pytest.fixture
@@ -30,7 +32,7 @@ def mock_model_path(tmp_path: Path) -> Path:
 
 
 @pytest.fixture
-def trt_config() -> Dict[str, Any]:
+def trt_config() -> dict[str, Any]:
     """TensorRT configuration for testing."""
     return {
         "use_tensorrt": False,  # Disable for unit tests

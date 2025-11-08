@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any
 
 import numpy as np
 import onnxruntime as ort
@@ -38,13 +38,13 @@ class TensorRTSession:
 
     def __init__(
         self,
-        model_path: Union[str, Path],
+        model_path: str | Path,
         use_tensorrt: bool = True,
         use_cuda: bool = True,
         fp16: bool = False,
         int8: bool = False,
         workspace_size: int = 4,
-        cache_dir: Optional[Union[str, Path]] = None,
+        cache_dir: str | Path | None = None,
         device_id: int = 0,
     ) -> None:
         """Initialize TensorRT session."""
@@ -79,14 +79,14 @@ class TensorRTSession:
         fp16: bool,
         int8: bool,
         workspace_size: int,
-        cache_dir: Optional[Union[str, Path]],
+        cache_dir: str | Path | None,
         device_id: int,
-    ) -> List[Union[str, Tuple[str, Dict[str, Any]]]]:
+    ) -> list[str | tuple[str, dict[str, Any]]]:
         """Setup execution providers with configuration."""
-        providers: List[Union[str, Tuple[str, Dict[str, Any]]]] = []
+        providers: list[str | tuple[str, dict[str, Any]]] = []
 
         if use_tensorrt:
-            trt_options: Dict[str, Any] = {
+            trt_options: dict[str, Any] = {
                 "device_id": device_id,
                 "trt_max_workspace_size": workspace_size * 1024 * 1024 * 1024,
                 "trt_fp16_enable": fp16,
@@ -110,9 +110,9 @@ class TensorRTSession:
 
     def run(
         self,
-        inputs: Union[np.ndarray, Dict[str, np.ndarray]],
-        output_names: Optional[List[str]] = None,
-    ) -> Union[List[np.ndarray], np.ndarray]:
+        inputs: np.ndarray | dict[str, np.ndarray],
+        output_names: list[str] | None = None,
+    ) -> list[np.ndarray] | np.ndarray:
         """
         Run inference on input data.
 
@@ -151,22 +151,22 @@ class TensorRTSession:
         return outputs
 
     @property
-    def input_names(self) -> List[str]:
+    def input_names(self) -> list[str]:
         """Get input tensor names."""
         return self._input_names
 
     @property
-    def output_names(self) -> List[str]:
+    def output_names(self) -> list[str]:
         """Get output tensor names."""
         return self._output_names
 
     @property
-    def input_shapes(self) -> List[List[Union[int, str]]]:
+    def input_shapes(self) -> list[list[int | str]]:
         """Get input tensor shapes."""
         return self._input_shapes
 
     @property
-    def output_shapes(self) -> List[List[Union[int, str]]]:
+    def output_shapes(self) -> list[list[int | str]]:
         """Get output tensor shapes."""
         return self._output_shapes
 

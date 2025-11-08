@@ -2,13 +2,14 @@
 
 from __future__ import annotations
 
-from pathlib import Path
-from typing import Any, Dict
+from typing import TYPE_CHECKING
 
-import numpy as np
 import pytest
 
 from onnxruntime_tensorrt.core.session import TensorRTSession
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 class TestTensorRTSession:
@@ -30,37 +31,31 @@ class TestTensorRTSession:
         """Test input_names property."""
         # This test requires a real ONNX model
         # Placeholder for demonstration
-        pass
 
     def test_output_names_property(self) -> None:
         """Test output_names property."""
         # This test requires a real ONNX model
         # Placeholder for demonstration
-        pass
 
     def test_run_with_single_input(self) -> None:
         """Test inference with single input."""
         # This test requires a real ONNX model
         # Placeholder for demonstration
-        pass
 
     def test_run_with_dict_input(self) -> None:
         """Test inference with dictionary input."""
         # This test requires a real ONNX model
         # Placeholder for demonstration
-        pass
 
     def test_run_invalid_input_name(self) -> None:
         """Test that ValueError is raised for invalid input names."""
         # This test requires a real ONNX model
         # Placeholder for demonstration
-        pass
 
     def test_session_repr(self, mock_model_path: Path) -> None:
         """Test string representation of session."""
         # This will fail because the mock file isn't a valid ONNX model
         # In real tests, you'd use an actual ONNX model
-        pass
 
 
 @pytest.mark.slow
@@ -71,22 +66,18 @@ class TestTensorRTSessionIntegration:
     @pytest.mark.skip(reason="Requires actual ONNX model")
     def test_full_inference_pipeline(self) -> None:
         """Test complete inference pipeline with real model."""
-        pass
 
     @pytest.mark.gpu
     @pytest.mark.skip(reason="Requires GPU")
     def test_cuda_execution(self) -> None:
         """Test CUDA execution provider."""
-        pass
 
     @pytest.mark.tensorrt
     @pytest.mark.skip(reason="Requires TensorRT")
     def test_tensorrt_execution(self) -> None:
         """Test TensorRT execution provider."""
-        pass
 
     @pytest.mark.tensorrt
     @pytest.mark.skip(reason="Requires TensorRT")
     def test_fp16_precision(self) -> None:
         """Test FP16 precision mode."""
-        pass

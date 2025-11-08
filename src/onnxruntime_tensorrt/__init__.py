@@ -10,6 +10,6 @@ from onnxruntime_tensorrt.utils.logger import setup_logger
 
 __all__ = [
     "TensorRTSession",
-    "setup_logger",
     "__version__",
+    "setup_logger",
 ]

@@ -3,11 +3,12 @@ SAM 2 (Segment Anything Model 2) with ONNX Runtime + TensorRT
 Real-time image and video segmentation
 """
 
+import time
+from typing import List, Tuple
+
 import cv2
 import numpy as np
 import onnxruntime as ort
-from typing import List, Tuple, Optional
-import time
 
 
 class SAM2Segmenter:
@@ -23,11 +24,7 @@ class SAM2Segmenter:
     """
 
     def __init__(
-        self,
-        encoder_path: str,
-        decoder_path: str,
-        use_tensorrt: bool = True,
-        fp16: bool = True
+        self, encoder_path: str, decoder_path: str, use_tensorrt: bool = True, fp16: bool = True
     ):
         print("Initializing SAM 2...")
 
@@ -52,15 +49,15 @@ class SAM2Segmenter:
 
         if use_tensorrt:
             trt_options = {
-                'device_id': 0,
-                'trt_max_workspace_size': 6 * 1024 * 1024 * 1024,  # 6GB
-                'trt_fp16_enable': fp16,
-                'trt_engine_cache_enable': True,
-                'trt_engine_cache_path': './trt_sam2_cache',
+                "device_id": 0,
+                "trt_max_workspace_size": 6 * 1024 * 1024 * 1024,  # 6GB
+                "trt_fp16_enable": fp16,
+                "trt_engine_cache_enable": True,
+                "trt_engine_cache_path": "./trt_sam2_cache",
             }
-            providers.append(('TensorrtExecutionProvider', trt_options))
+            providers.append(("TensorrtExecutionProvider", trt_options))
 
-        providers.extend(['CUDAExecutionProvider', 'CPUExecutionProvider'])
+        providers.extend(["CUDAExecutionProvider", "CPUExecutionProvider"])
         return providers
 
     def preprocess_image(self, image: np.ndarray) -> np.ndarray:
@@ -87,9 +84,7 @@ class SAM2Segmenter:
         chw = np.transpose(normalized, (2, 0, 1))
 
         # Add batch dimension
-        batched = np.expand_dims(chw, axis=0).astype(np.float32)
-
-        return batched
+        return np.expand_dims(chw, axis=0).astype(np.float32)
 
     def encode_image(self, image: np.ndarray) -> np.ndarray:
         """
@@ -106,9 +101,7 @@ class SAM2Segmenter:
 
         # Run encoder
         start_time = time.time()
-        embeddings = self.encoder.run(None, {
-            self.encoder.get_inputs()[0].name: input_tensor
-        })[0]
+        embeddings = self.encoder.run(None, {self.encoder.get_inputs()[0].name: input_tensor})[0]
         encode_time = (time.time() - start_time) * 1000
 
         print(f"Image encoding time: {encode_time:.2f}ms")
@@ -119,7 +112,7 @@ class SAM2Segmenter:
         image_embeddings: np.ndarray,
         points: np.ndarray,
         labels: np.ndarray,
-        original_size: Tuple[int, int]
+        original_size: Tuple[int, int],
     ) -> Tuple[np.ndarray, np.ndarray]:
         """
         Segment image using point prompts
@@ -144,11 +137,14 @@ class SAM2Segmenter:
 
         # Run decoder
         start_time = time.time()
-        outputs = self.decoder.run(None, {
-            'image_embeddings': image_embeddings,
-            'point_coords': point_coords,
-            'point_labels': point_labels,
-        })
+        outputs = self.decoder.run(
+            None,
+            {
+                "image_embeddings": image_embeddings,
+                "point_coords": point_coords,
+                "point_labels": point_labels,
+            },
+        )
         decode_time = (time.time() - start_time) * 1000
 
         masks, scores = outputs[0], outputs[1]
@@ -159,10 +155,7 @@ class SAM2Segmenter:
         return masks, scores
 
     def segment_with_box(
-        self,
-        image_embeddings: np.ndarray,
-        box: np.ndarray,
-        original_size: Tuple[int, int]
+        self, image_embeddings: np.ndarray, box: np.ndarray, original_size: Tuple[int, int]
     ) -> Tuple[np.ndarray, np.ndarray]:
         """
         Segment image using box prompt
@@ -177,41 +170,36 @@ class SAM2Segmenter:
         """
         # Convert box to point prompts
         x1, y1, x2, y2 = box
-        points = np.array([
-            [x1, y1],  # Top-left
-            [x2, y2],  # Bottom-right
-        ], dtype=np.float32)
+        points = np.array(
+            [
+                [x1, y1],  # Top-left
+                [x2, y2],  # Bottom-right
+            ],
+            dtype=np.float32,
+        )
         labels = np.array([2, 3], dtype=np.float32)  # Box corner labels
 
-        return self.segment_with_points(
-            image_embeddings, points, labels, original_size
-        )
+        return self.segment_with_points(image_embeddings, points, labels, original_size)
 
     def visualize_mask(
         self,
         image: np.ndarray,
         mask: np.ndarray,
         color: Tuple[int, int, int] = (0, 255, 0),
-        alpha: float = 0.5
+        alpha: float = 0.5,
     ) -> np.ndarray:
         """Overlay mask on image"""
 
         # Resize mask to image size
         h, w = image.shape[:2]
-        mask_resized = cv2.resize(
-            mask.squeeze(),
-            (w, h),
-            interpolation=cv2.INTER_LINEAR
-        )
+        mask_resized = cv2.resize(mask.squeeze(), (w, h), interpolation=cv2.INTER_LINEAR)
 
         # Create colored mask
         colored_mask = np.zeros_like(image)
         colored_mask[mask_resized > 0.5] = color
 
         # Blend with original image
-        result = cv2.addWeighted(image, 1, colored_mask, alpha, 0)
-
-        return result
+        return cv2.addWeighted(image, 1, colored_mask, alpha, 0)
 
 
 def main():
@@ -222,7 +210,7 @@ def main():
         encoder_path="models/sam2_encoder.onnx",
         decoder_path="models/sam2_decoder.onnx",
         use_tensorrt=True,
-        fp16=True
+        fp16=True,
     )
 
     # Load image
@@ -235,12 +223,10 @@ def main():
 
     # Example 1: Segment with point prompt
     print("\n=== Point Prompt Example ===")
-    points = np.array([[w//2, h//2]], dtype=np.float32)  # Center point
+    points = np.array([[w // 2, h // 2]], dtype=np.float32)  # Center point
     labels = np.array([1], dtype=np.float32)  # Foreground
 
-    masks, scores = segmenter.segment_with_points(
-        embeddings, points, labels, (h, w)
-    )
+    masks, scores = segmenter.segment_with_points(embeddings, points, labels, (h, w))
 
     # Use best mask
     best_mask_idx = np.argmax(scores[0])
@@ -253,7 +239,7 @@ def main():
 
     # Example 2: Segment with box prompt
     print("\n=== Box Prompt Example ===")
-    box = np.array([w//4, h//4, 3*w//4, 3*h//4], dtype=np.float32)
+    box = np.array([w // 4, h // 4, 3 * w // 4, 3 * h // 4], dtype=np.float32)
 
     masks, scores = segmenter.segment_with_box(embeddings, box, (h, w))
 
@@ -262,12 +248,7 @@ def main():
 
     # Visualize with box
     result = segmenter.visualize_mask(image, best_mask, color=(255, 0, 0))
-    cv2.rectangle(
-        result,
-        (int(box[0]), int(box[1])),
-        (int(box[2]), int(box[3])),
-        (255, 255, 0), 2
-    )
+    cv2.rectangle(result, (int(box[0]), int(box[1])), (int(box[2]), int(box[3])), (255, 255, 0), 2)
     cv2.imwrite("result_box.jpg", result)
     print("Box segmentation saved to result_box.jpg")
 

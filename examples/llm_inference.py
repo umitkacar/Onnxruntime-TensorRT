@@ -3,10 +3,11 @@ Large Language Model Inference with ONNX Runtime + TensorRT
 Optimized text generation with Llama 3, Qwen, Mistral models
 """
 
+import time
+from typing import List
+
 import numpy as np
 import onnxruntime as ort
-from typing import List, Optional
-import time
 from transformers import AutoTokenizer
 
 
@@ -27,7 +28,7 @@ class LLMInference:
         tokenizer_path: str,
         use_tensorrt: bool = True,
         use_fp16: bool = True,
-        max_length: int = 2048
+        max_length: int = 2048,
     ):
         print(f"Loading tokenizer from: {tokenizer_path}")
         self.tokenizer = AutoTokenizer.from_pretrained(tokenizer_path)
@@ -49,21 +50,18 @@ class LLMInference:
 
         if use_tensorrt:
             trt_options = {
-                'device_id': 0,
-                'trt_max_workspace_size': 8 * 1024 * 1024 * 1024,  # 8GB
-                'trt_fp16_enable': use_fp16,
-                'trt_engine_cache_enable': True,
-                'trt_engine_cache_path': './trt_llm_cache',
-                'trt_timing_cache_enable': True,
-                'trt_force_sequential_engine_build': False,
+                "device_id": 0,
+                "trt_max_workspace_size": 8 * 1024 * 1024 * 1024,  # 8GB
+                "trt_fp16_enable": use_fp16,
+                "trt_engine_cache_enable": True,
+                "trt_engine_cache_path": "./trt_llm_cache",
+                "trt_timing_cache_enable": True,
+                "trt_force_sequential_engine_build": False,
             }
-            providers.append(('TensorrtExecutionProvider', trt_options))
+            providers.append(("TensorrtExecutionProvider", trt_options))
             print("TensorRT enabled for LLM inference")
 
-        providers.extend([
-            'CUDAExecutionProvider',
-            'CPUExecutionProvider'
-        ])
+        providers.extend(["CUDAExecutionProvider", "CPUExecutionProvider"])
 
         return providers
 
@@ -85,7 +83,7 @@ class LLMInference:
         temperature: float = 0.7,
         top_p: float = 0.9,
         top_k: int = 50,
-        repetition_penalty: float = 1.1
+        repetition_penalty: float = 1.1,
     ) -> str:
         """
         Generate text from prompt
@@ -116,10 +114,7 @@ class LLMInference:
             start_time = time.time()
 
             # Prepare inputs
-            ort_inputs = {
-                "input_ids": input_ids,
-                "attention_mask": np.ones_like(input_ids)
-            }
+            ort_inputs = {"input_ids": input_ids, "attention_mask": np.ones_like(input_ids)}
 
             # Run inference
             outputs = self.session.run(None, ort_inputs)
@@ -138,10 +133,10 @@ class LLMInference:
 
             # Apply top-k filtering
             if top_k > 0:
-                indices_to_remove = next_token_logits < np.partition(
-                    next_token_logits, -top_k
-                )[-top_k]
-                next_token_logits[indices_to_remove] = -float('Inf')
+                indices_to_remove = (
+                    next_token_logits < np.partition(next_token_logits, -top_k)[-top_k]
+                )
+                next_token_logits[indices_to_remove] = -float("Inf")
 
             # Apply top-p (nucleus) filtering
             if top_p < 1.0:
@@ -155,17 +150,14 @@ class LLMInference:
                 sorted_indices_to_remove[0] = False
 
                 indices_to_remove = sorted_indices[sorted_indices_to_remove]
-                next_token_logits[indices_to_remove] = -float('Inf')
+                next_token_logits[indices_to_remove] = -float("Inf")
 
             # Sample next token
             probs = self._softmax(next_token_logits)
             next_token = np.random.choice(len(probs), p=probs)
 
             # Update input_ids
-            input_ids = np.concatenate([
-                input_ids,
-                np.array([[next_token]])
-            ], axis=1)
+            input_ids = np.concatenate([input_ids, np.array([[next_token]])], axis=1)
 
             generated_tokens.append(next_token)
 
@@ -177,9 +169,11 @@ class LLMInference:
             if (i + 1) % 10 == 0:
                 avg_time = total_time / (i + 1)
                 tokens_per_sec = 1000 / avg_time
-                print(f"Generated {i+1}/{max_new_tokens} tokens | "
-                      f"Avg: {avg_time:.2f}ms/token | "
-                      f"Speed: {tokens_per_sec:.2f} tokens/sec")
+                print(
+                    f"Generated {i+1}/{max_new_tokens} tokens | "
+                    f"Avg: {avg_time:.2f}ms/token | "
+                    f"Speed: {tokens_per_sec:.2f} tokens/sec"
+                )
 
             # Check for EOS token
             if next_token == self.tokenizer.eos_token_id:
@@ -191,7 +185,7 @@ class LLMInference:
 
         # Print statistics
         avg_latency = total_time / len(generated_tokens)
-        print(f"\n=== Generation Stats ===")
+        print("\n=== Generation Stats ===")
         print(f"Tokens generated: {len(generated_tokens)}")
         print(f"Total time: {total_time:.2f}ms")
         print(f"Average latency: {avg_latency:.2f}ms/token")
@@ -215,7 +209,7 @@ def main():
         model_path="models/llama-3.2-1b.onnx",
         tokenizer_path="meta-llama/Llama-3.2-1B",
         use_tensorrt=True,
-        use_fp16=True
+        use_fp16=True,
     )
 
     # Example prompts
@@ -226,15 +220,10 @@ def main():
     ]
 
     for prompt in prompts:
-        print("\n" + "="*60)
-        generated = llm.generate(
-            prompt=prompt,
-            max_new_tokens=150,
-            temperature=0.7,
-            top_p=0.9
-        )
+        print("\n" + "=" * 60)
+        generated = llm.generate(prompt=prompt, max_new_tokens=150, temperature=0.7, top_p=0.9)
         print(f"\nGenerated:\n{generated}")
-        print("="*60)
+        print("=" * 60)
 
 
 if __name__ == "__main__":
