@@ -142,3 +142,6 @@ docs/_build/
 !.secrets.baseline
 !tsconfig.json
 !package.json
+
+# GitHub Actions (requires workflow permissions)
+.github/workflows/
