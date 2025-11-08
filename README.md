@@ -402,14 +402,141 @@ ONNX+TRT INT8   | 2.8ms    | 357    | 1.8GB
 
 ---
 
+## 🛠️ Development
+
+### 🚀 Quick Start for Developers
+
+```bash
+# Clone repository
+git clone https://github.com/umitkacar/Onnxruntime-TensorRT.git
+cd Onnxruntime-TensorRT
+
+# Install with development dependencies
+pip install -e ".[dev]"
+
+# Or use Hatch (recommended)
+pip install hatch
+hatch env create
+```
+
+### 🧪 Running Tests
+
+```bash
+# Using Hatch
+hatch run test              # Run all tests
+hatch run test-cov          # Run with coverage
+hatch run cov-html          # Generate HTML coverage report
+
+# Using Make
+make test                   # Run tests
+make test-cov              # Run with coverage
+make test-html             # Open coverage in browser
+
+# Using pytest directly
+pytest                      # Run all tests
+pytest -m "not slow"       # Skip slow tests
+pytest -v                  # Verbose output
+```
+
+### 🎨 Code Quality
+
+```bash
+# Format code
+hatch run format
+# or
+make format
+
+# Lint code
+hatch run lint
+# or
+make lint
+
+# Type check
+hatch run type-check
+# or
+make type-check
+
+# Run all checks
+hatch run check-all
+# or
+make check-all
+```
+
+### 🔧 Pre-commit Hooks
+
+```bash
+# Install pre-commit hooks
+pip install pre-commit
+pre-commit install
+
+# Run manually
+pre-commit run --all-files
+```
+
+### 📦 Build Package
+
+```bash
+# Using Hatch
+hatch build
+
+# Using Make
+make build
+
+# Check package
+twine check dist/*
+```
+
+### 🛡️ Quality Tools
+
+This project uses modern Python tooling:
+
+| Tool | Purpose | Configuration |
+|------|---------|---------------|
+| **Hatch** | Build backend & env management | `pyproject.toml` |
+| **Ruff** | Linting & formatting (ultra-fast) | `pyproject.toml` |
+| **Black** | Code formatting | `pyproject.toml` |
+| **MyPy** | Static type checking (strict) | `pyproject.toml` |
+| **Pytest** | Testing framework | `pyproject.toml` |
+| **Coverage** | Code coverage (>90% target) | `pyproject.toml` |
+| **Pre-commit** | Git hooks for quality checks | `.pre-commit-config.yaml` |
+| **Bandit** | Security vulnerability scanner | `.bandit` |
+
+### 📚 Development Documentation
+
+- 📖 [CONTRIBUTING.md](CONTRIBUTING.md) - Contribution guidelines
+- 🔧 [DEVELOPMENT.md](DEVELOPMENT.md) - Detailed development guide
+- 🏗️ [Makefile](Makefile) - Common development commands
+
+### 🎯 Project Structure
+
+```
+Onnxruntime-TensorRT/
+├── src/onnxruntime_tensorrt/  # Source code
+│   ├── core/                   # Core functionality
+│   └── utils/                  # Utilities
+├── tests/                      # Test suite
+│   ├── conftest.py            # Pytest fixtures
+│   └── test_*.py              # Test modules
+├── examples/                   # Example scripts
+├── benchmark/                  # Benchmarking tools
+├── config/                     # Configuration files
+├── pyproject.toml             # Project configuration
+└── .pre-commit-config.yaml    # Pre-commit hooks
+```
+
+---
+
 ## 🤝 Contributing
 
-Contributions are welcome! Feel free to:
+We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
-- 🐛 Report bugs
-- 💡 Suggest new features
-- 📝 Improve documentation
-- 🔧 Submit pull requests
+**Quick checklist:**
+- ✅ Code follows style guidelines (Ruff + Black)
+- ✅ Type hints added (MyPy strict mode)
+- ✅ Tests added/updated (Pytest)
+- ✅ Documentation updated
+- ✅ Pre-commit hooks pass
+- ✅ All tests passing
 
 ---
 
