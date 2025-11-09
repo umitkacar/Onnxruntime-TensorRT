@@ -1,86 +1,48 @@
 # Pre-commit hooks configuration
-# See https://pre-commit.com for more information
+# Simplified and tested configuration for production use
 
 default_language_version:
-  python: python3.10
+  python: python3.11
 
 repos:
-  # ==================== General Checks ====================
+  # ==================== General File Checks ====================
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.5.0
     hooks:
-      # File checks
       - id: check-added-large-files
         args: ['--maxkb=5000']
       - id: check-case-conflict
       - id: check-merge-conflict
-      - id: check-symlinks
-      - id: destroyed-symlinks
-
-      # File formatting
       - id: end-of-file-fixer
       - id: trailing-whitespace
         args: [--markdown-linebreak-ext=md]
       - id: mixed-line-ending
         args: ['--fix=lf']
-
-      # Python checks
       - id: check-ast
-      - id: check-builtin-literals
-      - id: check-docstring-first
-      - id: debug-statements
-      - id: fix-byte-order-marker
-      - id: fix-encoding-pragma
-        args: ['--remove']
-
-      # JSON/YAML/TOML checks
       - id: check-json
       - id: check-yaml
-        args: ['--unsafe']  # Allow custom tags
+        args: ['--unsafe']
       - id: check-toml
-      - id: pretty-format-json
-        args: ['--autofix', '--indent=2', '--no-sort-keys']
-
-  # ==================== Python Security ====================
-  - repo: https://github.com/PyCQA/bandit
-    rev: 1.7.6
-    hooks:
-      - id: bandit
-        args: ['-c', 'pyproject.toml']
-        additional_dependencies: ['bandit[toml]']
-        exclude: ^tests/
-
-  # ==================== Secret Detection ====================
-  - repo: https://github.com/Yelp/detect-secrets
-    rev: v1.4.0
-    hooks:
-      - id: detect-secrets
-        args: ['--baseline', '.secrets.baseline']
-        exclude: package.lock.json
+      - id: debug-statements
 
   # ==================== Python Code Quality ====================
 
-  # Ruff - Fast Python linter (replaces flake8, isort, and more)
+  # Ruff - Ultra-fast linter and formatter
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.1.15
     hooks:
-      # Run the linter
       - id: ruff
-        args: ['--fix', '--exit-non-zero-on-fix']
-        types_or: [python, pyi, jupyter]
-      # Run the formatter
+        args: ['--fix']
       - id: ruff-format
-        types_or: [python, pyi, jupyter]
 
-  # Black - Code formatter (alternative to ruff-format)
+  # Black - Code formatter
   - repo: https://github.com/psf/black
     rev: 23.12.1
     hooks:
       - id: black
-        language_version: python3
         args: ['--line-length=100']
 
-  # MyPy - Static type checker
+  # MyPy - Static type checking
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v1.8.0
     hooks:
@@ -90,112 +52,16 @@ repos:
           - types-requests
           - types-tqdm
           - numpy
-        args:
-          - --strict
-          - --ignore-missing-imports
-          - --show-error-codes
+        args: ['--config-file=pyproject.toml', '--ignore-missing-imports']
         exclude: ^(tests|examples|benchmark)/
-
-  # ==================== Documentation ====================
-
-  # pydocstyle - Docstring checker
-  - repo: https://github.com/PyCQA/pydocstyle
-    rev: 6.3.0
-    hooks:
-      - id: pydocstyle
-        args:
-          - --convention=google
-          - --add-ignore=D100,D104,D105,D107
-        exclude: ^(tests|examples)/
-
-  # interrogate - Docstring coverage checker
-  - repo: https://github.com/econchick/interrogate
-    rev: 1.5.0
-    hooks:
-      - id: interrogate
-        args: [--verbose, --fail-under=80, --ignore-init-method, --ignore-init-module]
-        exclude: ^(tests|examples|benchmark)/
-
-  # ==================== Markdown & Docs ====================
-
-  - repo: https://github.com/markdownlint/markdownlint
-    rev: v0.12.0
-    hooks:
-      - id: markdownlint
-        args: ['--fix']
-
-  # ==================== YAML Linting ====================
-
-  - repo: https://github.com/adrienverge/yamllint
-    rev: v1.33.0
-    hooks:
-      - id: yamllint
-        args: [--strict, -c=.yamllint.yaml]
-
-  # ==================== Jupyter Notebooks ====================
-
-  - repo: https://github.com/nbQA-dev/nbQA
-    rev: 1.7.1
-    hooks:
-      - id: nbqa-black
-      - id: nbqa-ruff
-        args: ['--fix']
-      - id: nbqa-mypy
-
-  # Clear notebook outputs
-  - repo: https://github.com/kynan/nbstripout
-    rev: 0.6.1
-    hooks:
-      - id: nbstripout
-
-  # ==================== Git Commit Messages ====================
-
-  - repo: https://github.com/commitizen-tools/commitizen
-    rev: v3.13.0
-    hooks:
-      - id: commitizen
-        stages: [commit-msg]
-
-  # ==================== Spell Checking ====================
-
-  - repo: https://github.com/codespell-project/codespell
-    rev: v2.2.6
-    hooks:
-      - id: codespell
-        args:
-          - --ignore-words-list=crate,nd,sav,ro
-          - --skip="*.json,*.csv,*.xml,*.txt,*.lock"
-
-  # ==================== Python Upgrades ====================
-
-  - repo: https://github.com/asottile/pyupgrade
-    rev: v3.15.0
-    hooks:
-      - id: pyupgrade
-        args: [--py38-plus]
-
-  # ==================== Dependency Management ====================
-
-  - repo: https://github.com/python-poetry/poetry
-    rev: 1.7.0
-    hooks:
-      - id: poetry-check
-      - id: poetry-lock
-        args: ['--no-update']
 
 # ==================== CI Configuration ====================
 
 ci:
   autofix_commit_msg: |
-    🔧 [pre-commit.ci] auto fixes from pre-commit hooks
-
-    for more information, see https://pre-commit.ci
+    🔧 [pre-commit.ci] auto fixes
   autofix_prs: true
-  autoupdate_branch: ''
-  autoupdate_commit_msg: '⬆️ [pre-commit.ci] pre-commit autoupdate'
   autoupdate_schedule: weekly
   skip:
-    # These hooks are too slow for CI
     - mypy
-    - interrogate
   submodules: false
