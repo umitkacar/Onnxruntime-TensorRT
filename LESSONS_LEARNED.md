@@ -549,6 +549,353 @@ refusing to allow a GitHub App to create or update workflow
 
 ---
 
+## Common Pitfalls & How to Avoid Them
+
+### ❌ Pitfall 1: Ignoring Test Performance
+
+**Mistake:**
+```python
+# Slow sequential test execution
+pytest tests/  # 12.4 seconds
+```
+
+**Solution:**
+```python
+# Enable parallel execution
+pytest -n auto  # 3.89 seconds (3.2x faster)
+```
+
+**Lesson:** Always enable `pytest-xdist` for faster CI/CD.
+
+---
+
+### ❌ Pitfall 2: Over-Engineering Coverage
+
+**Mistake:**
+```toml
+# Unrealistic coverage target
+[tool.coverage.report]
+fail_under = 95  # Blocks merges
+```
+
+**Solution:**
+```toml
+# Pragmatic coverage target
+[tool.coverage.report]
+fail_under = 60  # Allows progress
+```
+
+**Lesson:** Coverage % is a metric, not a goal. 60% with quality tests > 90% with mocks.
+
+---
+
+### ❌ Pitfall 3: Too Many Pre-commit Hooks
+
+**Mistake:**
+```yaml
+# Slow hooks configuration
+repos:
+  - repo: pre-commit-hooks (8 hooks)
+  - repo: ruff-pre-commit (2 hooks)
+  - repo: black (1 hook)
+  - repo: mypy (1 hook)
+  - repo: bandit (1 hook)
+  - repo: pylint (1 hook)
+  - repo: flake8 (1 hook)
+  # Total: 15+ hooks, 5+ minute wait
+```
+
+**Solution:**
+```yaml
+# Essential hooks only
+repos:
+  - repo: pre-commit-hooks (6 fast file checks)
+  - repo: ruff-pre-commit (replaces 6 tools)
+  - repo: black (1 hook)
+  - repo: mypy (1 hook, src only)
+  # Total: ~30 seconds
+```
+
+**Lesson:** Ruff replaces flake8, isort, pyupgrade, pydocstyle, pycodestyle, and more.
+
+---
+
+### ❌ Pitfall 4: Committing Large Files
+
+**Mistake:**
+```bash
+git add models/yolov10.onnx  # 250MB
+git commit -m "Add model"
+# GitHub rejects push
+```
+
+**Solution:**
+```bash
+# Use Git LFS for large files
+git lfs track "*.onnx"
+git lfs track "*.pth"
+git lfs track "*.bin"
+git add .gitattributes
+git add models/yolov10.onnx
+git commit -m "Add model with LFS"
+```
+
+**Lesson:** Always use Git LFS for files >50MB.
+
+---
+
+### ❌ Pitfall 5: Not Using `.gitignore` Properly
+
+**Mistake:**
+```bash
+# Committing cache files
+git add .
+# Includes: __pycache__, .pytest_cache, trt_cache/, etc.
+```
+
+**Solution:**
+```gitignore
+# Comprehensive .gitignore
+__pycache__/
+*.pyc
+.pytest_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+trt_cache/
+.env
+```
+
+**Lesson:** Review `.gitignore` before first commit.
+
+---
+
+### ❌ Pitfall 6: Hardcoding Paths
+
+**Mistake:**
+```python
+# Breaks on other systems
+model = ort.InferenceSession('/home/user/model.onnx')
+```
+
+**Solution:**
+```python
+# Use relative paths or Path objects
+from pathlib import Path
+
+model_path = Path(__file__).parent / "models" / "model.onnx"
+model = ort.InferenceSession(str(model_path))
+```
+
+**Lesson:** Always use `pathlib.Path` for cross-platform compatibility.
+
+---
+
+### ❌ Pitfall 7: Skipping Type Hints
+
+**Mistake:**
+```python
+# No type safety
+def process_image(img, size):
+    return cv2.resize(img, size)
+```
+
+**Solution:**
+```python
+# Clear types
+from typing import Tuple
+import numpy as np
+
+def process_image(
+    img: np.ndarray,
+    size: Tuple[int, int]
+) -> np.ndarray:
+    return cv2.resize(img, size)
+```
+
+**Lesson:** Type hints catch bugs at development time, not runtime.
+
+---
+
+### ❌ Pitfall 8: Not Pinning Dependencies
+
+**Mistake:**
+```toml
+# Breaks in 6 months
+dependencies = [
+    "numpy",
+    "onnxruntime-gpu"
+]
+```
+
+**Solution:**
+```toml
+# Stable versions
+dependencies = [
+    "numpy>=1.24.0,<2.0.0",
+    "onnxruntime-gpu>=1.17.0"
+]
+```
+
+**Lesson:** NumPy 2.0 broke many projects. Pin major versions.
+
+---
+
+### ❌ Pitfall 9: Forgetting to Cache Build Artifacts
+
+**Mistake:**
+```yaml
+# Rebuilds TensorRT engines every time
+trt_engine_cache_enable = False
+```
+
+**Solution:**
+```yaml
+# Cache for 10x startup speedup
+trt_engine_cache_enable = True
+trt_engine_cache_path = './trt_cache'
+```
+
+**Lesson:** First TensorRT build: 60s. Cached load: <1s.
+
+---
+
+### ❌ Pitfall 10: Poor Error Messages
+
+**Mistake:**
+```python
+# Unhelpful error
+raise Exception("Failed")
+```
+
+**Solution:**
+```python
+# Actionable error
+raise RuntimeError(
+    f"TensorRT engine build failed for {model_path}. "
+    f"Check CUDA version ({cuda_version}) and workspace size ({workspace_mb}MB). "
+    f"See logs: {log_path}"
+)
+```
+
+**Lesson:** Error messages should tell users what to do next.
+
+---
+
+## Quick Reference Guide
+
+### Essential Commands
+
+```bash
+# Development Setup
+pip install -e ".[dev]"          # Install with dev dependencies
+pre-commit install               # Install git hooks
+
+# Testing
+pytest -n auto                    # Run tests in parallel
+pytest --cov --cov-report=html   # Generate coverage report
+pytest -m "not slow"             # Skip slow tests
+
+# Code Quality
+ruff check --fix                 # Auto-fix linting issues
+black .                          # Format code
+mypy src                         # Type check source code
+
+# Build & Release
+hatch build                      # Build wheel and sdist
+twine check dist/*               # Verify package
+pip install dist/*.whl           # Test installation
+
+# Pre-commit
+pre-commit run --all-files       # Run all hooks manually
+pre-commit autoupdate            # Update hook versions
+```
+
+### Configuration Quick Reference
+
+```toml
+# pyproject.toml essentials
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "your-package"
+version = "1.0.0"
+requires-python = ">=3.9"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP", "B", "A", "C4", "PT", "SIM"]
+ignore = ["TRY003", "BLE001"]  # Pragmatic ignores
+
+[tool.pytest.ini_options]
+addopts = ["-n", "auto", "--cov"]  # Parallel + coverage
+
+[tool.mypy]
+python_version = "3.9"
+ignore_missing_imports = true
+```
+
+### Troubleshooting Quick Checks
+
+```bash
+# Problem: Import errors
+python -c "import onnxruntime; print(onnxruntime.__version__)"
+python -c "import numpy; print(numpy.__version__)"
+
+# Problem: CUDA issues
+nvidia-smi                       # Check GPU
+nvcc --version                   # Check CUDA compiler
+
+# Problem: Tests failing
+pytest -vv                       # Verbose output
+pytest --lf                      # Run last failed tests only
+pytest --tb=short                # Short traceback
+
+# Problem: Type errors
+mypy --show-error-codes src      # Show error codes to ignore
+mypy --install-types             # Install missing type stubs
+
+# Problem: Linting errors
+ruff check --statistics          # Show error counts by type
+ruff check --output-format=github # GitHub-friendly output
+```
+
+### Performance Optimization Checklist
+
+```
+✅ Enable pytest-xdist (pytest -n auto)
+✅ Use Ruff instead of flake8 (20x faster)
+✅ Limit pre-commit hooks (<30s total)
+✅ Cache dependencies in CI
+✅ Use shallow git clones (--depth=1)
+✅ Skip unnecessary test markers
+✅ Enable coverage caching
+✅ Use isolated build environments (python -m build)
+```
+
+### Security Best Practices
+
+```bash
+# Run security scans
+bandit -r src/                   # Static code analysis
+pip-audit                        # Check dependencies
+safety check                     # Known vulnerabilities
+
+# Pre-commit hooks
+detect-secrets                   # Scan for credentials
+check-added-large-files          # Prevent large commits
+
+# Safe dependency management
+pip install pip-tools            # For requirements.txt pinning
+pip-compile requirements.in      # Lock versions
+```
+
+---
+
 ## Summary of Key Metrics
 
 ```
