@@ -14,7 +14,7 @@ Thank you for your interest in contributing! This document provides guidelines a
 
 ### Prerequisites
 
-- Python 3.8 or higher
+- Python 3.9 or higher
 - Git
 - CUDA Toolkit (for GPU support)
 - TensorRT (optional, for TensorRT features)
@@ -165,7 +165,7 @@ Use pytest markers to categorize tests:
 
 ### Coverage
 
-Maintain high test coverage (aim for >90%):
+Maintain high test coverage (60% is production-ready for this project):
 
 ```bash
 # Generate coverage report

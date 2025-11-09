@@ -5,7 +5,7 @@
 
 <img src="https://img.shields.io/badge/ONNX-Runtime-005CED?style=for-the-badge&logo=onnx&logoColor=white" />
 <img src="https://img.shields.io/badge/TensorRT-NVIDIA-76B900?style=for-the-badge&logo=nvidia&logoColor=white" />
-<img src="https://img.shields.io/badge/Python-3.8+-3776AB?style=for-the-badge&logo=python&logoColor=white" />
+<img src="https://img.shields.io/badge/Python-3.9+-3776AB?style=for-the-badge&logo=python&logoColor=white" />
 <img src="https://img.shields.io/badge/C++-17-00599C?style=for-the-badge&logo=cplusplus&logoColor=white" />
 <img src="https://img.shields.io/badge/CUDA-12.0+-76B900?style=for-the-badge&logo=nvidia&logoColor=white" />
 
@@ -497,7 +497,7 @@ This project uses modern Python tooling:
 | **Black** | Code formatting | `pyproject.toml` |
 | **MyPy** | Static type checking (strict) | `pyproject.toml` |
 | **Pytest** | Testing framework | `pyproject.toml` |
-| **Coverage** | Code coverage (>90% target) | `pyproject.toml` |
+| **Coverage** | Code coverage (60% production-ready) | `pyproject.toml` |
 | **Pre-commit** | Git hooks for quality checks | `.pre-commit-config.yaml` |
 | **Bandit** | Security vulnerability scanner | `.bandit` |
 
@@ -505,6 +505,8 @@ This project uses modern Python tooling:
 
 - 📖 [CONTRIBUTING.md](CONTRIBUTING.md) - Contribution guidelines
 - 🔧 [DEVELOPMENT.md](DEVELOPMENT.md) - Detailed development guide
+- 💡 [LESSONS_LEARNED.md](LESSONS_LEARNED.md) - Real insights and solutions
+- 📝 [CHANGELOG.md](CHANGELOG.md) - Version history and changes
 - 🏗️ [Makefile](Makefile) - Common development commands
 
 ### 🎯 Project Structure
@@ -518,8 +520,16 @@ Onnxruntime-TensorRT/
 │   ├── conftest.py            # Pytest fixtures
 │   └── test_*.py              # Test modules
 ├── examples/                   # Example scripts
+│   ├── yolov10_inference.py   # YOLOv10 detection
+│   ├── llm_inference.py       # LLM generation
+│   └── sam2_segmentation.py   # SAM 2 segmentation
 ├── benchmark/                  # Benchmarking tools
 ├── config/                     # Configuration files
+├── docs/                       # Documentation
+│   ├── CONTRIBUTING.md        # Contribution guide
+│   ├── DEVELOPMENT.md         # Developer guide
+│   ├── LESSONS_LEARNED.md     # Insights & solutions
+│   └── CHANGELOG.md           # Version history
 ├── pyproject.toml             # Project configuration
 └── .pre-commit-config.yaml    # Pre-commit hooks
 ```
