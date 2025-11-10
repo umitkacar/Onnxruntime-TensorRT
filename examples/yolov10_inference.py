@@ -3,11 +3,12 @@ YOLOv10 Inference with ONNX Runtime + TensorRT
 Ultra-fast object detection with GPU acceleration
 """
 
+import time
+from typing import List, Optional, Tuple
+
 import cv2
 import numpy as np
 import onnxruntime as ort
-from typing import List, Tuple
-import time
 
 
 class YOLOv10Detector:
@@ -27,7 +28,7 @@ class YOLOv10Detector:
         use_tensorrt: bool = True,
         fp16: bool = True,
         int8: bool = False,
-        cache_dir: str = "./trt_cache"
+        cache_dir: str = "./trt_cache",
     ):
         self.model_path = model_path
         self.input_shape = (640, 640)
@@ -43,16 +44,12 @@ class YOLOv10Detector:
         self.input_name = self.session.get_inputs()[0].name
         self.output_names = [out.name for out in self.session.get_outputs()]
 
-        print(f"Model loaded successfully!")
+        print("Model loaded successfully!")
         print(f"Input: {self.input_name}")
         print(f"Outputs: {self.output_names}")
 
     def _setup_providers(
-        self,
-        use_tensorrt: bool,
-        fp16: bool,
-        int8: bool,
-        cache_dir: str
+        self, use_tensorrt: bool, fp16: bool, int8: bool, cache_dir: str
     ) -> List[Tuple]:
         """Setup execution providers with optimal configuration"""
 
@@ -60,22 +57,19 @@ class YOLOv10Detector:
 
         if use_tensorrt:
             trt_options = {
-                'device_id': 0,
-                'trt_max_workspace_size': 4 * 1024 * 1024 * 1024,  # 4GB
-                'trt_fp16_enable': fp16,
-                'trt_int8_enable': int8,
-                'trt_engine_cache_enable': True,
-                'trt_engine_cache_path': cache_dir,
-                'trt_max_partition_iterations': 1000,
-                'trt_min_subgraph_size': 1,
+                "device_id": 0,
+                "trt_max_workspace_size": 4 * 1024 * 1024 * 1024,  # 4GB
+                "trt_fp16_enable": fp16,
+                "trt_int8_enable": int8,
+                "trt_engine_cache_enable": True,
+                "trt_engine_cache_path": cache_dir,
+                "trt_max_partition_iterations": 1000,
+                "trt_min_subgraph_size": 1,
             }
-            providers.append(('TensorrtExecutionProvider', trt_options))
+            providers.append(("TensorrtExecutionProvider", trt_options))
             print("TensorRT enabled with FP16" if fp16 else "TensorRT enabled")
 
-        providers.extend([
-            'CUDAExecutionProvider',
-            'CPUExecutionProvider'
-        ])
+        providers.extend(["CUDAExecutionProvider", "CPUExecutionProvider"])
 
         return providers
 
@@ -116,10 +110,7 @@ class YOLOv10Detector:
         return image_batch, scale, (new_w, new_h)
 
     def postprocess(
-        self,
-        outputs: List[np.ndarray],
-        scale: float,
-        conf_threshold: float = 0.25
+        self, outputs: List[np.ndarray], scale: float, conf_threshold: float = 0.25
     ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         """
         Post-process model outputs
@@ -153,9 +144,7 @@ class YOLOv10Detector:
         return boxes, scores, class_ids
 
     def detect(
-        self,
-        image: np.ndarray,
-        conf_threshold: float = 0.25
+        self, image: np.ndarray, conf_threshold: float = 0.25
     ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         """
         Run object detection on image
@@ -172,10 +161,7 @@ class YOLOv10Detector:
 
         # Inference
         start_time = time.time()
-        outputs = self.session.run(
-            self.output_names,
-            {self.input_name: input_tensor}
-        )
+        outputs = self.session.run(self.output_names, {self.input_name: input_tensor})
         inference_time = (time.time() - start_time) * 1000
 
         # Postprocess
@@ -191,7 +177,7 @@ class YOLOv10Detector:
         boxes: np.ndarray,
         scores: np.ndarray,
         class_ids: np.ndarray,
-        class_names: List[str] = None
+        class_names: Optional[List[str]] = None,
     ) -> np.ndarray:
         """Draw detection results on image"""
 
@@ -205,10 +191,7 @@ class YOLOv10Detector:
 
             # Draw label
             label = f"{class_names[class_id] if class_names else class_id}: {score:.2f}"
-            cv2.putText(
-                result, label, (x1, y1 - 10),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2
-            )
+            cv2.putText(result, label, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
         return result
 
@@ -217,24 +200,90 @@ def main():
     """Example usage"""
 
     # Initialize detector
-    detector = YOLOv10Detector(
-        model_path="yolov10n.onnx",
-        use_tensorrt=True,
-        fp16=True
-    )
+    detector = YOLOv10Detector(model_path="yolov10n.onnx", use_tensorrt=True, fp16=True)
 
     # COCO class names
     class_names = [
-        'person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat',
-        'traffic light', 'fire hydrant', 'stop sign', 'parking meter', 'bench', 'bird', 'cat',
-        'dog', 'horse', 'sheep', 'cow', 'elephant', 'bear', 'zebra', 'giraffe', 'backpack',
-        'umbrella', 'handbag', 'tie', 'suitcase', 'frisbee', 'skis', 'snowboard', 'sports ball',
-        'kite', 'baseball bat', 'baseball glove', 'skateboard', 'surfboard', 'tennis racket',
-        'bottle', 'wine glass', 'cup', 'fork', 'knife', 'spoon', 'bowl', 'banana', 'apple',
-        'sandwich', 'orange', 'broccoli', 'carrot', 'hot dog', 'pizza', 'donut', 'cake', 'chair',
-        'couch', 'potted plant', 'bed', 'dining table', 'toilet', 'tv', 'laptop', 'mouse', 'remote',
-        'keyboard', 'cell phone', 'microwave', 'oven', 'toaster', 'sink', 'refrigerator', 'book',
-        'clock', 'vase', 'scissors', 'teddy bear', 'hair drier', 'toothbrush'
+        "person",
+        "bicycle",
+        "car",
+        "motorcycle",
+        "airplane",
+        "bus",
+        "train",
+        "truck",
+        "boat",
+        "traffic light",
+        "fire hydrant",
+        "stop sign",
+        "parking meter",
+        "bench",
+        "bird",
+        "cat",
+        "dog",
+        "horse",
+        "sheep",
+        "cow",
+        "elephant",
+        "bear",
+        "zebra",
+        "giraffe",
+        "backpack",
+        "umbrella",
+        "handbag",
+        "tie",
+        "suitcase",
+        "frisbee",
+        "skis",
+        "snowboard",
+        "sports ball",
+        "kite",
+        "baseball bat",
+        "baseball glove",
+        "skateboard",
+        "surfboard",
+        "tennis racket",
+        "bottle",
+        "wine glass",
+        "cup",
+        "fork",
+        "knife",
+        "spoon",
+        "bowl",
+        "banana",
+        "apple",
+        "sandwich",
+        "orange",
+        "broccoli",
+        "carrot",
+        "hot dog",
+        "pizza",
+        "donut",
+        "cake",
+        "chair",
+        "couch",
+        "potted plant",
+        "bed",
+        "dining table",
+        "toilet",
+        "tv",
+        "laptop",
+        "mouse",
+        "remote",
+        "keyboard",
+        "cell phone",
+        "microwave",
+        "oven",
+        "toaster",
+        "sink",
+        "refrigerator",
+        "book",
+        "clock",
+        "vase",
+        "scissors",
+        "teddy bear",
+        "hair drier",
+        "toothbrush",
     ]
 
     # Load image

@@ -1,0 +1,67 @@
+# Pre-commit hooks configuration
+# Simplified and tested configuration for production use
+
+default_language_version:
+  python: python3.11
+
+repos:
+  # ==================== General File Checks ====================
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: check-added-large-files
+        args: ['--maxkb=5000']
+      - id: check-case-conflict
+      - id: check-merge-conflict
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+      - id: mixed-line-ending
+        args: ['--fix=lf']
+      - id: check-ast
+      - id: check-json
+      - id: check-yaml
+        args: ['--unsafe']
+      - id: check-toml
+      - id: debug-statements
+
+  # ==================== Python Code Quality ====================
+
+  # Ruff - Ultra-fast linter and formatter
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.1.15
+    hooks:
+      - id: ruff
+        args: ['--fix']
+      - id: ruff-format
+
+  # Black - Code formatter
+  - repo: https://github.com/psf/black
+    rev: 23.12.1
+    hooks:
+      - id: black
+        args: ['--line-length=100']
+
+  # MyPy - Static type checking
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.8.0
+    hooks:
+      - id: mypy
+        additional_dependencies:
+          - types-PyYAML
+          - types-requests
+          - types-tqdm
+          - numpy
+        args: ['--config-file=pyproject.toml', '--ignore-missing-imports']
+        exclude: ^(tests|examples|benchmark)/
+
+# ==================== CI Configuration ====================
+
+ci:
+  autofix_commit_msg: |
+    🔧 [pre-commit.ci] auto fixes
+  autofix_prs: true
+  autoupdate_schedule: weekly
+  skip:
+    - mypy
+  submodules: false

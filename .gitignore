@@ -105,4 +105,43 @@ mlruns/
 
 # Benchmark Results
 benchmark_results/
+
+# Configuration (allow yaml but ignore json results)
+!config/*.yaml
+!.secrets.baseline
+benchmark_results.json
+
+# Hatch
+.hatch/
+
+# MyPy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Ruff
+.ruff_cache/
+
+# Coverage
+.coverage
+coverage.xml
+htmlcov/
+
+# Documentation
+site/
+docs/_build/
+
+# Pre-commit
+.pre-commit-cache/
+
+# Pytest
+.pytest_cache/
+
+# Package JSON (but allow config files)
 *.json
+!.secrets.baseline
+!tsconfig.json
+!package.json
+
+# GitHub Actions (requires workflow permissions)
+.github/workflows/

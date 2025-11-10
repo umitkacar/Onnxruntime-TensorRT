@@ -1,0 +1,23 @@
+[bandit]
+# Bandit configuration for security checks
+
+exclude_dirs = [
+    '/tests',
+    '/examples',
+    '/.venv',
+    '/venv',
+    '/env',
+]
+
+# Tests to skip
+skips = [
+    'B101',  # assert_used - pytest uses assert
+    'B601',  # paramiko_calls
+    'B603',  # subprocess_without_shell_equals_true
+]
+
+# Confidence level
+confidence = 'MEDIUM'
+
+# Severity level
+severity = 'MEDIUM'
