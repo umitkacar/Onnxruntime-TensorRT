@@ -1,7 +1,13 @@
 <div align="center">
 
 # 🚀 ONNX Runtime × TensorRT
-### ⚡ Ultra-Fast AI Inference Engine
+### *40x Faster AI Inference with FP16/INT8 Quantization & Multi-GPU Support*
+
+<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=22&duration=3000&pause=1000&color=6366F1&center=true&vCenter=true&multiline=true&width=900&lines=40x+Performance+Boost+%F0%9F%9A%80;ONNX+%2B+TensorRT+%2B+CUDA+12.0%2B+%E2%9A%A1;FP16+%2F+INT8+Quantization+%F0%9F%94%A5" alt="Typing SVG" />
+
+[![Stars](https://img.shields.io/github/stars/umitkacar/onnx-tensorrt-optimization?style=for-the-badge&logo=github&color=yellow)](https://github.com/umitkacar/onnx-tensorrt-optimization/stargazers)
+[![Forks](https://img.shields.io/github/forks/umitkacar/onnx-tensorrt-optimization?style=for-the-badge&logo=github)](https://github.com/umitkacar/onnx-tensorrt-optimization/network)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
 
 <img src="https://img.shields.io/badge/ONNX-Runtime-005CED?style=for-the-badge&logo=onnx&logoColor=white" />
 <img src="https://img.shields.io/badge/TensorRT-NVIDIA-76B900?style=for-the-badge&logo=nvidia&logoColor=white" />
